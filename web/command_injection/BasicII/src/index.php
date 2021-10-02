@@ -3,6 +3,15 @@
         <title>Name searching database</title>
         <?php
 if (isset($_GET["name"])) {
+    // We don't want special chars in the search, it sometimes breaks things...
+    // Also no animals :)
+    $nono_bad = array(";", "&", "|", "cat", "dog", "bird");
+    $e = explode(" ", $_GET["name"]);
+    for($i = 0, $s = count($e); $i < $s; ++$i) {
+        if(in_array($e[$i], $nono_bad)) {
+            die("No! Bad searcher! Bad!");
+        }
+    }
     $names = shell_exec("grep " . $_GET["name"] . " names.txt");
 }
         ?>

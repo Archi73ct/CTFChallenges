@@ -1,0 +1,1 @@
+flag{little_information_can_become_alot}

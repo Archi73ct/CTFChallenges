@@ -1,0 +1,34 @@
+    </head>
+    <body>
+        <h1>New New Calculator Secure (tm)</h1>
+        <p>now, you got past me a couple of times, but<br>
+            this time you can't escape.
+        </p>
+        <form method="POST">
+            <div>
+                <label for="name">What do you want to calculate?</label>
+                <br>
+                    <input name="text">
+                    <input type="submit">
+                <p>{{output}}</p>
+            </div>
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%;"><span></span><span style="color: #008000; font-weight: bold">from</span> <span style="color: #0000FF; font-weight: bold">flask</span> <span style="color: #008000; font-weight: bold">import</span> Flask, request, render_template
+<span style="color: #408080; font-style: italic"># no more os for you...</span>
+
+app <span style="color: #666666">=</span> Flask(<span style="color: #19177C">__name__</span>)
+
+blacklist <span style="color: #666666">=</span> [<span style="color: #BA2121">'ls'</span>, <span style="color: #BA2121">'cat'</span>, <span style="color: #BA2121">'whoami'</span>, <span style="color: #BA2121">'cp'</span>, <span style="color: #BA2121">'mv'</span>, <span style="color: #BA2121">'pwd'</span>, <span style="color: #BA2121">';'</span>, <span style="color: #BA2121">'import '</span>, <span style="color: #BA2121">'exec'</span>, <span style="color: #BA2121">'__builtins__'</span>]
+
+<span style="color: #AA22FF">@app</span><span style="color: #666666">.</span>route(<span style="color: #BA2121">'/'</span>)
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">index</span>():
+    <span style="color: #008000; font-weight: bold">return</span> render_template(<span style="color: #BA2121">'index.html'</span>)
+
+<span style="color: #AA22FF">@app</span><span style="color: #666666">.</span>route(<span style="color: #BA2121">'/'</span>, methods<span style="color: #666666">=</span>[<span style="color: #BA2121">'POST'</span>])
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">very_safe_function</span>():
+    field_input <span style="color: #666666">=</span> request<span style="color: #666666">.</span>form[<span style="color: #BA2121">'text'</span>]
+    output <span style="color: #666666">=</span> <span style="color: #008000">str</span>(field_input)
+    <span style="color: #008000; font-weight: bold">for</span> word <span style="color: #AA22FF; font-weight: bold">in</span> blacklist:
+        <span style="color: #008000; font-weight: bold">if</span> word <span style="color: #AA22FF; font-weight: bold">in</span> output:
+                <span style="color: #008000; font-weight: bold">return</span> render_template(<span style="color: #BA2121">'index.html'</span>, output<span style="color: #666666">=</span><span style="color: #BA2121">f"Your input contains </span><span style="color: #BB6688; font-weight: bold">{</span>word<span style="color: #BB6688; font-weight: bold">}</span><span style="color: #BA2121">, which is not allowed."</span>)             
+    <span style="color: #008000; font-weight: bold">return</span> render_template(<span style="color: #BA2121">'index.html'</span>, output<span style="color: #666666">=</span><span style="color: #008000">eval</span>(output))
+</pre></div>
